@@ -10,5 +10,5 @@ package GroupProject;
  * @author Christian Ortiz 
  */
 public class Card {
-    
+//cooleo    
 }
