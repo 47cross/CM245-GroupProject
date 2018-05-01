@@ -51,16 +51,16 @@ public class Player extends Deck {
             
             if(cardNum == 1) {
                 numAces++;
-                handSum =+ 11;
+                handSum = handSum + 11;
             } else if(cardNum > 10) {
-                handSum =- 10;
+                handSum = handSum + 10;
             } else {
-                handSum =+ cardNum;
+                handSum = handSum + cardNum;
             }
         }
       
         while(handSum > 21 && numAces > 0) {
-            handSum =- 10;
+            handSum = handSum - 10;
             numAces--;
         }
         return handSum;
