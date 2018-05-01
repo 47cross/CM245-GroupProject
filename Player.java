@@ -27,6 +27,7 @@ public class Player extends Deck {
     
     public void addCard(Card c) {
         hand.add(c);
+        numCards++;
     }
     
     //Mutators
