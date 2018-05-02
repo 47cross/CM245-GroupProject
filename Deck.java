@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,63 +12,44 @@ import java.util.ArrayList;
  *
  * @author Matt
  */
-public class Player extends Deck {
+public class Deck {
     
-    private String name;
-    private ArrayList<Card> hand = new ArrayList<>();
-    private int numCards;
-    
-    public Player(String aName) {
-        
-        this.name = aName;
-        this.emptyHand();
-        
-    }
-    public void emptyHand() {}
-    
-    public void addCard(Card c) {
-        hand.add(c);
-    }
-    
-    //Mutators
-    public String getName() {
-        return this.name;
-    }
-    public int getNumCards() {
-        return this.numCards;
-    }
-    
-    
-    public int getHandSum() {
-        
-        int handSum = 0;
-        int cardNum;
-        int numAces = 0;
-        
-        for(int c = 0; c < this.numCards; c++) {
-            
-            cardNum = this.hand.get(c).getValue();
-            
-            if(cardNum == 1) {
-                numAces++;
-                handSum =+ 11;
-            } else if(cardNum > 10) {
-                handSum =- 10;
-            } else {
-                handSum =+ cardNum;
-            }
-        }
-      
-        while(handSum > 21 && numAces > 0) {
-            handSum =- 10;
-            numAces--;
-        }
-        return handSum;
-    }
-    public void printHand() {
-        for(int k = 0;k < hand.size();k++) {
-            System.out.println(hand.get(k));
+ private ArrayList<Card> cards;
 
+    public void createDeck() {
+        cards = new ArrayList<>();
+        int theSuit, theValue;
+        for (theSuit = 0; theSuit <= 3; theSuit++) {
+            for (theValue = 1; theValue <= 13; theValue++) {
+                Card c = new Card(theValue, theSuit);
+                cards.add(c);
             }
         }
     }
+    
+    public void printDeck() {
+        for(int k = 0;k < cards.size();k++) {
+            System.out.println(cards.get(k));
+        }
+    }
+
+    public void shuffle() {
+        Collections.shuffle(cards);
+    }
+
+    public void reset() {
+        cards.clear();
+        createDeck();
+    }
+
+    public Card deal() {
+        int size = cards.size();
+        if (size == 1) {
+            reset();
+            shuffle();
+        }
+        
+        return cards.remove(0);
+    }
+    
+}
