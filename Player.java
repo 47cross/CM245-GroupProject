@@ -23,7 +23,9 @@ public class Player extends Deck {
         this.emptyHand();
         
     }
-    public void emptyHand() {}
+    public void emptyHand() {
+        hand.clear();
+        numCards=0;
     
     public void addCard(Card c) {
         hand.add(c);
@@ -37,6 +39,11 @@ public class Player extends Deck {
     public int getNumCards() {
         return this.numCards;
     }
+     public String getCardName(Card c){
+        return c.getValueString()+c.getSuitString(); 
+    }
+    public Card getCard(int c){
+        return this.hand.get(c);
     
     
     public int getHandSum() {
