@@ -1,9 +1,7 @@
 package CardGame;
+
 import java.util.Scanner;
 import javafx.application.Application;
-import static javafx.application.Application.launch;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,11 +12,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
+import javafx.scene.layout.GridPane;
 import static javafx.application.Application.launch;
 
 /*
@@ -34,12 +29,15 @@ import static javafx.application.Application.launch;
 public class Game extends Application {
     private Button btHit = new Button("Hit");
     private Button btStay = new Button("Stay");
+    private Button btNew = new Button("New Game");
     private TextField tfDealer = new TextField();
     private TextField tfPlayer = new TextField();
     private HBox handBox = new HBox(15); 
     private boolean bust;
     private boolean p1Turn;
     Label status = new Label();
+    Label PTotal = new Label();
+    Label DTotal = new Label();
     
    
      @Override // Override the start method in the Application class
@@ -53,19 +51,19 @@ public class Game extends Application {
         System.out.print("Please enter your name: \n");
         Player P1 = new Player(in.next());
         System.out.printf("Alright %s, are you ready to play? \n",P1.getName());
-        
+        p1Turn=true;
+        bust=false;
         Deck deck = new Deck();
         deck.createDeck();
         deck.shuffle();
         
         P1.addCard(deck.deal());
-        
         P1.printHand();
         System.out.println(P1.getHandSum());
         
             // Place nodes in the pane
         pane.setBottom(getHandBox(P1)); 
-        pane.setCenter(getHBox());
+        pane.setCenter(getGrid());
         pane.setTop(getDealerBox(D));
         
         newGame(deck,P1,D,pane);
@@ -74,17 +72,34 @@ public class Game extends Application {
         
         
         btHit.setOnAction(e -> {
-            //if(p1Turn == true && bust!=true){
+            if(p1Turn == true && bust!=true){
                 P1.addCard(deck.deal());
                 pane.setBottom(getHandBox(P1));
-            //}
+            }
             if(P1.getHandSum() > 21){
                 bust = true;
-               // p1Turn = false;
+                p1Turn = false;
                 status.setText("Bust!");
             }
         });
-       // btStay.setOnAction(e -> StayMethod());
+        btStay.setOnAction(e -> {
+            if(p1Turn == true && bust!=true){
+                p1Turn = false;
+                while(D.getHandSum()<17){
+                    D.addCard(deck.deal());
+                pane.setTop(getDealerBox(D));
+                if(P1.getHandSum() > D.getHandSum() && D.getHandSum() < 21){
+                    status.setText("YOU WIN!");
+                } else if(P1.getHandSum() < D.getHandSum() && D.getHandSum() < 21){
+                    status.setText("you lose...");
+                } else if(P1.getHandSum() == D.getHandSum())
+                    status.setText("TIE!");
+                }
+             }
+        });
+        btNew.setOnAction(e -> {
+            newGame(deck,P1,D,pane);
+        });
     
         // Create a scene and place it in the stage
         Scene scene = new Scene(pane, 450, 450);
@@ -102,9 +117,13 @@ public class Game extends Application {
       deck.reset();
       deck.shuffle();
       P1.addCard(deck.deal());
+      D.addCard(deck.deal());
       pane.setTop(getDealerBox(D));
-      pane.setCenter(getHBox());
+      pane.setCenter(getGrid());
       pane.setBottom(getHandBox(P1));
+      bust = false;
+      p1Turn = true;
+      status.setText("");
   }
   
   private HBox getDealerBox(Player D) {
@@ -116,6 +135,7 @@ public class Game extends Application {
                 D.getCardName(D.getCard(k)) + ".png"));
         dealerBox.getChildren().add(imageView);
     }
+    DTotal.setText("Dealer Total: " + String.valueOf(D.getHandSum()));
     return dealerBox;
   }
   
@@ -129,17 +149,22 @@ public class Game extends Application {
                 P1.getCardName(P1.getCard(k)) + ".png"));
         handBox.getChildren().add(imageView);
     }
+    PTotal.setText("Player Total: " + String.valueOf(P1.getHandSum()));
     return handBox;
     }
   
-  private HBox getHBox() {
-    HBox hBox = new HBox(20);
-    hBox.setPadding(new Insets(5));
-    hBox.setAlignment(Pos.CENTER);
-    hBox.getChildren().add(btHit);
-    hBox.getChildren().add(btStay);
-    hBox.getChildren().add(status);
-     return hBox;
+  private GridPane getGrid() {
+    GridPane grid = new GridPane();
+    grid.setAlignment(Pos.CENTER);
+    grid.setHgap(5);
+    grid.setVgap(40);
+    grid.add(DTotal,2,0);
+    grid.add(btHit,1,1);
+    grid.add(btStay,2,1);
+    grid.add(btNew,3,1);
+    grid.add(PTotal,2,2);
+    grid.add(status,4,1);
+     return grid;
   }
   
   /**
@@ -150,6 +175,7 @@ public class Game extends Application {
     launch(args);
   }
 } 
+
 
         
     
